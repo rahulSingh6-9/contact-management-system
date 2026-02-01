@@ -26,9 +26,10 @@ app.use('/', contactRoutes)
 //     console.log(name)
 //     res.redirect('/')
 // })
-const port = process.env.PORT || 37341
+const port = process.env.PORT || 3000;
 
-app.listen(port , () =>{
-    console.log(`http://localhost:/${port}`)
-})
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
 
