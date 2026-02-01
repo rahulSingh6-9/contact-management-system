@@ -29,6 +29,6 @@ app.use('/', contactRoutes)
 const port = process.env.PORT || 37341
 
 app.listen(port , () =>{
-    console.log("http://localhost:3000/")
+    console.log(`http://localhost:/${port}`)
 })
 

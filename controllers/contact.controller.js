@@ -54,44 +54,50 @@ if (!isMatch) {
 
 //Contact Save
 export const saveContact = async (req, res) => {
-   
+  try {
+    const { name, email, number, subject, message } = req.body
 
-   try{
-     const { name, email, number, subject, message } = req.body
-
-    // user IP address
     const ip_address =
-        req.headers['x-forwarded-for'] ||
-        req.socket.remoteAddress
+      req.headers['x-forwarded-for'] ||
+      req.socket.remoteAddress
 
+    // 1️⃣ DB save (ye already kaam kar raha hai)
     await db.execute(
-        `INSERT INTO contact_msg 
-        (name, email, phone, subject, message, ip_address)
-        VALUES (?, ?, ?, ?, ?, ?)`,
-        [name, email, number || null, subject || null, message, ip_address]
+      `INSERT INTO contact_msg 
+      (name, email, phone, subject, message, ip_address)
+      VALUES (?, ?, ?, ?, ?, ?)`,
+      [name, email, number || null, subject || null, message, ip_address]
     )
 
-    // 2️⃣ Send Email
-    await transporter.sendMail({
-    from: `"Website Contact" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER,      // 📩 EMAIL TUMHE AAYEGA
-    replyTo: email,                  // ↩️ reply directly client ko jayega
-    subject: subject || "New Contact Message",
-    html: `
-        <h3>New Contact Message</h3>
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Phone:</b> ${number || 'N/A'}</p>
-        <p><b>Message:</b><br>${message}</p>
-        <p><b>IP:</b> ${ip_address || 'N/A'}</p>
-    `
-})
+    // 2️⃣ EMAIL SEND
+    try {
+      await transporter.sendMail({
+        from: `"Website Contact" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER,
+        replyTo: email,
+        subject: subject || "New Contact Message",
+        html: `
+          <h3>New Contact Message</h3>
+          <p><b>Name:</b> ${name}</p>
+          <p><b>Email:</b> ${email}</p>
+          <p><b>Phone:</b> ${number || 'N/A'}</p>
+          <p><b>Message:</b><br>${message}</p>
+          <p><b>IP:</b> ${ip_address || 'N/A'}</p>
+        `
+      })
+      console.log("Email sent successfully ✅")
+    } catch (err) {
+      // 👇 YAHI WO CATCH HAI
+      console.error("Email error:", err.message)
+    }
 
+    // User ko success hi dikhao (email fail ho tab bhi)
+    res.send("Message saved successfully ✅")
 
-  console.log("Message sent successfully ✅")
-    // res.sendFile(path.join(__dirname, '../public/success.html'))
-    res.send("Message sent successfully ✅")
-   }catch(err){ console.log(err.message)}
+  } catch (err) {
+    console.error("Save contact error:", err)
+    res.status(500).send("Something went wrong")
+  }
 }
 
 
