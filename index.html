@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="search" placeholder="Search..."  />
+    <button onclick="handle()">search</button>
+
+<ul id="list">
+  <li>Apple</li>
+  <li>Banana</li>
+  <li>Mango</li>
+  <li>Orange</li>
+  <li>Pineapple</li>
+</ul>
+<script>
+  const searchInput = document.getElementById("search");
+  const items = document.querySelectorAll("#list li");
+
+  searchInput.addEventListener('input', function() {
+    const searchValue = searchInput.value.toLowerCase();
+    console.log(searchValue)
+
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+
+      if (text.includes(searchValue)) {
+        item.style.display = "block";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  }
+  )
+
+   function handle() {
+    const searchValue = searchInput.value.toLowerCase();
+    console.log(searchValue)
+
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+
+      if (text.includes(searchValue)) {
+        item.style.display = "block";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  };
+</script>
+
+</body>
+</html>

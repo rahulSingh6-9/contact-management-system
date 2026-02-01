@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact</title>
+
+<style>
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ===== PAGE BACKGROUND ===== */
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(79,70,229,0.12), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(34,211,238,0.12), transparent 45%),
+        #f5f7fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.contact-wrapper {
+    width: 90%;
+    max-width: 1150px;
+    background: #24355c;
+    border-radius: 22px;
+    box-shadow:
+        0 30px 60px rgba(15,23,42,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+}
+
+/* ===== LEFT FORM ===== */
+.contact-form {
+    padding: 44px;
+}
+
+.contact-form h2 {
+    font-size: 26px;
+    margin-bottom: 28px;
+    color: #f1f5f9; /* lighter text */
+    letter-spacing: -0.3px;
+}
+
+/* ===== INPUTS ===== */
+.form-group {
+    margin-bottom: 22px;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1; /* light label color */
+}
+
+input, textarea {
+    width: 100%;
+    margin-top: 8px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #334155; /* darker border */
+    background: #1e293b;
+    color: #f1f5f9;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8;
+}
+
+input:hover,
+textarea:hover {
+    background: #273449;
+}
+
+input:focus,
+textarea:focus {
+    background: #273449;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79,70,229,0.18);
+}
+
+textarea {
+    min-height: 130px;
+    resize: none;
+}
+
+/* ===== BUTTON ===== */
+button {
+    margin-top: 12px;
+    width: 100%;
+    padding: 15px;
+    border-radius: 16px;
+    border: none;
+    background:
+        linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px rgba(79,70,229,0.45);
+}
+
+/* Button green state */
+button.success {
+    background-color: #10b981 !important; /* Emerald green */
+    background-image: none !important; /* remove gradient */
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(16,185,129,0.5);
+}
+
+/* ===== RIGHT PREVIEW ===== */
+.preview {
+    padding: 44px;
+    background: #1e293b; /* dark like left */
+    color: #f1f5f9;
+    border-left: 1px solid #334155;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.preview h3 {
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: #f1f5f9;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 8px;
+}
+
+/* ===== MAIL CARD ===== */
+.mail-card {
+    background: #273449;
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* less gap to pull message up */
+    font-family: "Inter", sans-serif;
+}
+
+/* Header */
+.mail-header {
+    padding-bottom: 8px; /* less padding */
+    margin-bottom: 12px;
+    border-bottom: 1px solid #334155;
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* closer lines */
+}
+
+.mail-header p {
+    font-size: 14px;
+    color: #cbd5e1;
+    font-weight: 500;
+}
+
+.mail-header p strong {
+    color: #f1f5f9;
+}
+
+/* Body */
+.mail-body p {
+    font-size: 15px;
+    line-height: 1.6; /* reduce line height so message isn’t too low */
+    color: #f1f5f9;
+    white-space: pre-wrap;
+}
+
+.mail-body strong {
+    color: #ffffff;
+    font-size: 15px;
+}
+
+/* Footer */
+.mail-footer p {
+    font-size: 13px;
+    color: #94a3b8;
+    text-align: right;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .contact-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .preview {
+        border-left: none;
+        border-top: 1px solid #334155;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="contact-wrapper">
+
+    <!-- LEFT : FORM -->
+    <div class="contact-form">
+        <h2>Contact Us</h2>
+
+        <form id="Contact-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" oninput="handler()" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" oninput="handler()" required>
+            </div>
+            <div class="form-group">
+                <label for="number">Number</label>
+                <input type="number" id="number" name="number" placeholder="Enter your number" oninput="handler()" required>
+            </div>
+
+            <div class="form-group">
+                <label for="msg">Message</label>
+                <textarea id="msg" name="message" maxlength="2000" placeholder="Type your message..." oninput="handler()" required></textarea>
+            </div>
+
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+   <!-- ===== RIGHT : OUTLOOK PREVIEW ===== -->
+<div class="preview">
+  <h3>Email Preview</h3>
+
+  <div class="mail-card">
+
+    <!-- Header -->
+    <div class="mail-header">
+      <p><strong>From:</strong> <span class="client-name"></span> &lt;<span class="client-email"></span>&gt;</p>
+      <p><strong>Phone:</strong> <span class="client-phone"></span></p>
+      <p><strong>To:</strong> <span class="your-name">Rahul Singh</span> &lt;<span class="your-email">rj@yourdomain.com</span>&gt;</p>
+    </div>
+
+    <!-- Body -->
+    <div class="mail-body">
+      <p><strong>Message:</strong><br><span class="client-msg"></span></p>
+    </div>
+
+    <!-- Footer (optional) -->
+    <div class="mail-footer">
+      <p></p>
+    </div>
+
+  </div>
+</div>
+
+
+</div>
+
+<script>
+const form = document.querySelector("#Contact-form")
+const button = form.querySelector("button")
+
+function handler(){
+    const name = document.querySelector("#name").value
+    const email = document.querySelector("#email").value
+    const phone = document.querySelector("#number").value
+    const msg = document.querySelector("#msg").value
+
+    document.querySelector(".client-name").innerText = name
+    document.querySelector(".client-email").innerText = email
+    document.querySelector(".client-phone").innerText = phone
+    document.querySelector(".client-msg").innerText = msg
+}
+
+
+form.addEventListener('submit', (e) =>{
+    e.preventDefault()
+
+    // Simulate POST request
+    const formData = new FormData(form)
+    const params = new URLSearchParams(formData)
+
+    fetch('/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: params.toString()
+    }).then(() => {
+        // On success
+        button.innerText = "Successfully Sent"
+        button.classList.add("success")
+    }).catch(() => {
+        // On failure (optional)
+        button.innerText = "Error! Try Again"
+        button.style.backgroundColor = "#ef4444"
+    })
+})
+</script>
+
+</body>
+</html>
