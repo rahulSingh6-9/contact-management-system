@@ -159,3 +159,8 @@ export const deleteContacts = async (req, res) => {
         res.status(500).json({ error: "Delete failed" })
     }
 }
+
+// Health check endpoint
+export const healtz =  (req, res) => {
+  res.status(200).send('OK');
+}
