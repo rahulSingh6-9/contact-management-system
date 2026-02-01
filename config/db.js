@@ -11,6 +11,13 @@ export const db = await mysql.createConnection({
    
 })
 
+db.connect(err => {
+  if (err) {
+    console.error("❌ DB Error:", err.message);
+  } else {
+    console.log("✅ MySQL Connected");
+  }
+})
 
 // const [rows] = await db.execute(`DESC contact_msg`)
 // console.log(db.host)
