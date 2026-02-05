@@ -1,9 +1,9 @@
-import express from 'express'
 import mysql from 'mysql2/promise'
 import dotenv from 'dotenv'
+
 dotenv.config()
 
-export const db = await mysql.createPool({
+const db = mysql.createPool({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
@@ -14,15 +14,4 @@ export const db = await mysql.createPool({
   queueLimit: 0
 })
 
-db.connect(err => {
-  if (err) {
-    console.error("❌ DB Error:", err.message);
-  } else {
-    console.log("✅ MySQL Connected");
-  }
-})
-
-// const [rows] = await db.execute(`DESC contact_msg`)
-// console.log(db.host)
-
-
+export default db
