@@ -1,4 +1,4 @@
-import { db } from '../config/db.js'
+import db  from '../config/db.js'
 import bcrypt from 'bcrypt'
 import { transporter } from '../utils/mailer.js'
 import path from 'path'
