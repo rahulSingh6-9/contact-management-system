@@ -29,9 +29,9 @@ body {
 
 /* ===== MAIN CONTAINER ===== */
 .contact-wrapper {
-    margin-top: 30px;
+    margin-top: 20px;
     width: 850px;
-    height: 700px;
+    height: 650px;
     background: #24355c;
     border-radius: 22px;
     box-shadow:
@@ -44,7 +44,7 @@ body {
 
 /* ===== LEFT FORM ===== */
 .contact-form {
-    padding: 44px;
+    padding: 35px;
 }
 
 /* ===== TOP BUTTONS ===== */
@@ -98,7 +98,7 @@ body {
 
 /* ===== INPUTS ===== */
 .form-group {
-    margin-bottom: 22px;
+    margin-bottom: 15px;
 }
 
 label {
@@ -110,7 +110,7 @@ label {
 input, textarea {
     width: 100%;
     margin-top: 8px;
-    padding: 14px 16px;
+    padding: 8px 10px;
     border-radius: 14px;
     border: 1px solid #334155; /* darker border */
     background: #1e293b;
@@ -122,6 +122,7 @@ input, textarea {
 input::placeholder,
 textarea::placeholder {
     color: #94a3b8;
+
 }
 
 input:hover,
@@ -137,7 +138,7 @@ textarea:focus {
 }
 
 textarea {
-    min-height: 130px;
+    min-height: 80px;
     resize: none;
 }
 
@@ -294,7 +295,7 @@ button.success {
 
             <div class="form-group">
                 <label for="msg">Message</label>
-                <textarea id="msg" name="message" maxlength="1000" placeholder="Type your message..." oninput="handler()" required></textarea>
+                <textarea id="msg" name="message" maxlength="2000" placeholder="Type your message..." oninput="handler()" required></textarea>
             </div>
 
             <button type="submit">Send Message</button>
