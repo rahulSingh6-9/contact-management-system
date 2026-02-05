@@ -7,7 +7,7 @@ import contactRoutes from './routes/contact.routes.js'
 dotenv.config()
 const app = express()
 
-
+app.use(express.static('public'))
 
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())

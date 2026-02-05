@@ -17,13 +17,14 @@
 /* ===== PAGE BACKGROUND ===== */
 body {
     min-height: 100vh;
+    padding: 40px 0; /* ✅ TOP & BOTTOM GAP */
     background:
         radial-gradient(circle at top left, rgba(79,70,229,0.12), transparent 45%),
         radial-gradient(circle at bottom right, rgba(34,211,238,0.12), transparent 45%),
         #f5f7fb;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: flex-start; /* ✅ no edge touching */
 }
 
 /* ===== MAIN CONTAINER ===== */
@@ -43,6 +44,25 @@ body {
 /* ===== LEFT FORM ===== */
 .contact-form {
     padding: 44px;
+}
+
+/* ===== ADMIN BUTTON ===== */
+.admin-btn {
+    display: inline-block;
+    margin-bottom: 18px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(14,165,233,0.4);
 }
 
 .contact-form h2 {
@@ -219,6 +239,10 @@ button.success {
 
     <!-- LEFT : FORM -->
     <div class="contact-form">
+
+         <!-- ✅ ADMIN REDIRECT BUTTON -->
+        <a href="/admin" class="admin-btn">Admin Panel</a>
+
         <h2>Contact Us</h2>
 
         <form id="Contact-form">
