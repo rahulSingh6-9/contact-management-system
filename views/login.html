@@ -19,10 +19,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
 }
 
 .login-box {
-    width: 360px;
     padding: 40px;
     background: rgba(255,255,255,0.1);
     backdrop-filter: blur(10px);
@@ -71,8 +76,10 @@ button {
     border-radius: 8px;
     font-size: 16px;
     font-weight: bold;
+    color: #0f2027;
     cursor: pointer;
     transition: 0.3s;
+    margin-top: 10px;
 }
 
 button:hover {
@@ -80,37 +87,238 @@ button:hover {
     box-shadow: 0 10px 20px rgba(0,217,255,0.4);
 }
 
+/* ===== FORGOT PASSWORD SECTION ===== */
+.forgot-password-section {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.forgot-password-section.active {
+    display: block;
+}
+
+.forgot-password-section h3 {
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.forgot-password-section p {
+    color: #ddd;
+    font-size: 13px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.forgot-password-section input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    color: #fff;
+    font-size: 14px;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+.forgot-password-section input::placeholder {
+    color: #ddd;
+}
+
+.forgot-password-section input:focus {
+    background: rgba(255,255,255,0.25);
+    box-shadow: 0 0 0 2px #00d9ff;
+}
+
+/* ===== TOGGLE LINK ===== */
+.toggle-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.toggle-link a {
+    color: #00d9ff;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.toggle-link a:hover {
+    text-decoration: underline;
+    color: #00ffff;
+}
+
+/* ===== MESSAGES ===== */
+.message {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+    display: none;
+}
+
+.message.error {
+    background: rgba(255, 77, 77, 0.2);
+    color: #ff7777;
+    border: 1px solid rgba(255, 77, 77, 0.4);
+    display: block;
+}
+
+.message.success {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    display: block;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    .login-box {
+        padding: 30px 20px;
+    }
+
+    .login-box h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="login-box">
-    <h2>Admin Login</h2>
-    <form method="POST" action="/login">
-        <div class="input-group">
-            <input type="text" name="admin_id" placeholder="Admin ID" required>
+<div class="login-container">
+    <div class="login-box">
+        <!-- ===== LOGIN FORM ===== -->
+        <div id="loginForm" class="login-form-container">
+            <h2>Admin Login</h2>
+            <div class="message error" id="loginError"></div>
+            <div class="message success" id="loginSuccess"></div>
+            
+            <form method="POST" action="/login" id="adminLoginForm">
+                <div class="input-group">
+                    <input type="email" name="admin_id" placeholder="Admin Email" required>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <div class="toggle-link">
+                <a onclick="toggleForgotPassword()">Forgot Password?</a>
+            </div>
         </div>
 
-        <div class="input-group">
-            <input type="password" name="password" placeholder="Password" required>
-        </div>
+        <!-- ===== FORGOT PASSWORD FORM ===== -->
+        <div id="forgotPasswordForm" class="forgot-password-section">
+            <h3>Reset Password</h3>
+            <p>Enter your email address and we'll send you a password reset link.</p>
+            
+            <div class="message error" id="resetError"></div>
+            <div class="message success" id="resetSuccess"></div>
+            
+            <form id="resetPasswordForm">
+                <div class="input-group">
+                    <input type="email" id="resetEmail" placeholder="Enter your email" required>
+                </div>
 
-        <button type="submit">Login</button>
-    </form>
+                <button type="submit">Send Reset Link</button>
+            </form>
+
+            <div class="toggle-link">
+                <a onclick="toggleForgotPassword()">Back to Login</a>
+            </div>
+        </div>
+    </div>
 </div>
+
 <script>
-    const params = new URLSearchParams(window.location.search);
+// ===== TOGGLE FORGOT PASSWORD FORM =====
+function toggleForgotPassword() {
+    const loginForm = document.getElementById('loginForm');
+    const forgotForm = document.getElementById('forgotPasswordForm');
+    
+    loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+    forgotForm.classList.toggle('active');
+    
+    // Clear messages
+    clearMessages();
+}
 
-    if (params.get("error")) {
-        alert("❌ Wrong Admin ID or Password");
+// ===== CLEAR MESSAGES =====
+function clearMessages() {
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('loginSuccess').style.display = 'none';
+    document.getElementById('resetError').style.display = 'none';
+    document.getElementById('resetSuccess').style.display = 'none';
+}
+
+// ===== HANDLE LOGIN ERROR FROM URL =====
+const params = new URLSearchParams(window.location.search);
+if (params.get("error")) {
+    const loginError = document.getElementById('loginError');
+    if (params.get("error") === "1") {
+        loginError.textContent = "❌ Invalid email or password";
+    } else if (params.get("error") === "invalid") {
+        loginError.textContent = "❌ Please fill in all fields";
+    } else {
+        loginError.textContent = "❌ Login failed. Please try again.";
     }
-</script>
+    loginError.style.display = 'block';
+}
 
+// ===== HANDLE PASSWORD RESET FORM =====
+document.getElementById('resetPasswordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('resetEmail').value;
+    const resetError = document.getElementById('resetError');
+    const resetSuccess = document.getElementById('resetSuccess');
+    
+    clearMessages();
+    
+    try {
+        const response = await fetch('/api/reset-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            resetError.textContent = "❌ " + (data.error || 'Failed to send reset email');
+            resetError.style.display = 'block';
+            return;
+        }
+        
+        resetSuccess.textContent = "✅ " + data.message;
+        resetSuccess.style.display = 'block';
+        document.getElementById('resetPasswordForm').reset();
+        
+    } catch (error) {
+        console.error('Reset error:', error);
+        resetError.textContent = "❌ Server error. Please try again later.";
+        resetError.style.display = 'block';
+    }
+});
+</script>
 
 </body>
 </html>

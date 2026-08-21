@@ -1,55 +1,277 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Conditions | Health Coach Vikas Kumar</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#059669;
+      --primary-dark:#047857;
+      --bg-soft:#f8fafc;
+      --text-main:#1f2937;
+    }
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg-soft);
+      color:var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+   /* ===== GLASS HEADER ===== */
+.glass-header{
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255,255,255,0.78);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+
+/* ===== MOBILE MENU ===== */
+.mobile-menu{
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:290px;
+  max-width:85vw;
+  height:100%;
+  background:linear-gradient(180deg,#ffffff,#f8fafc);
+  box-shadow:-30px 0 60px rgba(0,0,0,.18);
+  transition:.45s cubic-bezier(.77,0,.18,1);
+  z-index:1000;
+  padding:26px;
+  display:flex;
+  flex-direction:column;
+}
+.mobile-menu.active{ right:0; }
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  opacity:0;
+  pointer-events:none;
+  transition:.3s ease;
+  z-index:999;
+}
+.overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.menu-btn{ display:none; }
+@media(max-width:768px){
+  .menu-btn{ display:flex; align-items:center; justify-content:center; }
+}
+
+/* mobile links */
+.mobile-menu nav a{
+  padding:12px 14px;
+  border-radius:12px;
+  transition:.25s ease;
+  display:block;
+  font-weight:500;
+}
+.mobile-menu nav a:hover{
+  background:rgba(5,150,105,.08);
+  color:var(--primary);
+}
+.mobile-menu nav a.active{
+  background:rgba(5,150,105,.12);
+  color:var(--primary);
+}
+
+  </style>
 </head>
+
 <body>
-    <input type="text" id="search" placeholder="Search..."  />
-    <button onclick="handle()">search</button>
 
-<ul id="list">
-  <li>Apple</li>
-  <li>Banana</li>
-  <li>Mango</li>
-  <li>Orange</li>
-  <li>Pineapple</li>
-</ul>
+<!-- OVERLAY -->
+<div class="overlay" onclick="closeMenu()"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+
+  <div class="flex justify-between items-center mb-10">
+    <h3 class="font-semibold text-lg" style="color:var(--text-main)">
+      Menu
+    </h3>
+    <button onclick="closeMenu()"
+      class="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center text-lg hover:bg-gray-100 transition">
+      ✕
+    </button>
+  </div>
+
+  <nav class="flex flex-col gap-2 text-gray-700 font-medium">
+    <a href="/home-2">Home</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms" class="active">Terms</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+  </nav>
+</div>
+
+<!-- HEADER -->
+<header class="glass-header sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-5 sm:px-6 py-4 sm:py-5 flex justify-between items-center">
+
+    <h1 class="text-lg sm:text-xl md:text-2xl font-semibold"
+        style="color:var(--primary)">
+      Health Coach Vikas Kumar
+    </h1>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
+      <a href="/home-2" class="hover:text-green-600">Home</a>
+      <a href="/privacy" class="hover:text-green-600">Privacy</a>
+      <a href="/terms" class="text-green-600">Terms</a>
+      <a href="/about" style="hover:color:var(--primary)">About</a>
+      <a href="/contact" class="hover:text-green-600">Contact</a>
+    </nav>
+
+    <!-- Hamburger -->
+    <button
+      class="menu-btn md:hidden w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-xl hover:bg-gray-50 transition"
+      onclick="openMenu()">
+      ☰
+    </button>
+    
+  </div>
+</header>
+
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-green-50 to-white py-16 md:py-20">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        Terms & Conditions
+      </h2>
+      <p class="text-gray-600 text-base md:text-lg">
+        Effective Date: January 1, 2026
+      </p>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <main class="max-w-4xl mx-auto px-6 py-14 md:py-20 space-y-14">
+
+    <!-- Section -->
+    <section>
+      <h3 class="text-xl md:text-2xl font-semibold text-green-600 mb-4">
+        1. Introduction
+      </h3>
+      <p class="leading-relaxed text-gray-700">
+        Welcome to thesehatjunction.in. By accessing this website,
+        you agree to comply with and be bound by these Terms and Conditions.
+        If you do not agree, please discontinue use of this website.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="text-xl md:text-2xl font-semibold text-green-600 mb-4">
+        2. Use of Website
+      </h3>
+      <p class="mb-4 leading-relaxed">
+        You agree to use this website only for lawful purposes. You must not:
+      </p>
+      <ul class="list-disc list-inside space-y-2 text-gray-700">
+        <li>Republish material without permission</li>
+        <li>Sell or redistribute website content</li>
+        <li>Reproduce content for commercial purposes</li>
+        <li>Use the website in a way that may harm the business</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 class="text-xl md:text-2xl font-semibold text-green-600 mb-4">
+        3. Coaching Services Disclaimer
+      </h3>
+      <p class="leading-relaxed">
+        Coaching services provided by Health Coach Vikas Kumar are for
+        personal development and wellness purposes only.
+        They do not replace medical, financial, or legal advice.
+        Results vary based on individual effort and commitment.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="text-xl md:text-2xl font-semibold text-green-600 mb-4">
+        4. WhatsApp Communication (WABA Compliance)
+      </h3>
+      <p class="mb-4 leading-relaxed">
+        We may communicate with you via WhatsApp only if:
+      </p>
+      <ul class="list-disc list-inside space-y-2 text-gray-700">
+        <li>You voluntarily provide your phone number</li>
+        <li>You explicitly consent to receive messages</li>
+      </ul>
+      <p class="mt-4 leading-relaxed">
+        Messages may include appointment confirmations, service updates,
+        coaching reminders, or promotional content (only if separately consented).
+        You may opt out anytime by replying <strong>STOP</strong>.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="text-xl md:text-2xl font-semibold text-green-600 mb-4">
+        5. Cookies
+      </h3>
+      <p class="leading-relaxed">
+        This website uses cookies to enhance user experience and analyze traffic.
+        You may disable optional cookies in your browser settings.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="text-xl md:text-2xl font-semibold text-green-600 mb-4">
+        6. User Content
+      </h3>
+      <p class="leading-relaxed">
+        By submitting content on this website, you confirm that you have the
+        right to share such content and that it does not violate any laws.
+        We reserve the right to remove inappropriate content.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="text-xl md:text-2xl font-semibold text-green-600 mb-4">
+        7. Disclaimer of Liability
+      </h3>
+      <p class="leading-relaxed">
+        We do not guarantee completeness or accuracy of information and
+        are not liable for damages arising from website use.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="text-xl md:text-2xl font-semibold text-green-600 mb-4">
+        8. Contact Information
+      </h3>
+      <p class="leading-relaxed">
+        Email: info@thesehatjunction.in <br>
+        Website: https://thesehatjunction.in
+      </p>
+    </section>
+
+  </main>
+
+<p class="mt-6 text-white text-center py-4 rounded-lg text-xs sm:text-sm sm:px-6 mx-4"
+       style="background:var(--text-main);">
+      © 2026 Health Coach Vikas Kumar. All rights reserved.
+    </p>
+
 <script>
-  const searchInput = document.getElementById("search");
-  const items = document.querySelectorAll("#list li");
-
-  searchInput.addEventListener('input', function() {
-    const searchValue = searchInput.value.toLowerCase();
-    console.log(searchValue)
-
-    items.forEach(item => {
-      const text = item.textContent.toLowerCase();
-
-      if (text.includes(searchValue)) {
-        item.style.display = "block";
-      } else {
-        item.style.display = "none";
-      }
-    });
-  }
-  )
-
-   function handle() {
-    const searchValue = searchInput.value.toLowerCase();
-    console.log(searchValue)
-
-    items.forEach(item => {
-      const text = item.textContent.toLowerCase();
-
-      if (text.includes(searchValue)) {
-        item.style.display = "block";
-      } else {
-        item.style.display = "none";
-      }
-    });
-  };
+function openMenu(){
+  document.getElementById('mobileMenu').classList.add('active');
+  document.querySelector('.overlay').classList.add('active');
+}
+function closeMenu(){
+  document.getElementById('mobileMenu').classList.remove('active');
+  document.querySelector('.overlay').classList.remove('active');
+}
 </script>
 
 </body>

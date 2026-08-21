@@ -1,58 +1,8 @@
-import db  from '../config/db.js'
-import bcrypt from 'bcrypt'
+import { supabase } from '../config/supabase.js'
+import { createClient } from '@supabase/supabase-js'
 import { transporter } from '../utils/mailer.js'
-import path from 'path'
-
-const contactPage =  path.join(process.cwd(), 'views' ,'contact.html')
-const loginPage = path.join(process.cwd(), 'views', 'login.html')
-const adminPage = path.join(process.cwd(), 'views', 'admin.html')
-
-//get
-export const showLoginPage = (req, res) => {
-    res.sendFile(loginPage)
-}
-export const showAdminPage = (req, res) => {
-    if (!req.session.admin) {
-        return res.redirect('/login');
-    }
-    res.sendFile(adminPage)
-}
-export const showContactForm = (req, res) => {
-    res.sendFile(contactPage)
-}
-export const logout = (req, res) => {
-    req.session.admin = false
-    res.redirect('/login')
-}
-
-//post login
-export const loginAdmin = async (req, res) => {
-    const { admin_id, password} = req.body
-
-    const [rows] = await db.execute(
-        `select * from admin 
-        where admin_id = ?`,
-        [admin_id]
-    )
-
-     if (rows.length === 0) {
-    return res.redirect('/login?error=1');
-}
-
-    const admin = rows[0]
-    const isMatch = await bcrypt.compare(password, admin.password)
 
 
-if (!isMatch) {
-    return res.redirect('/login?error=1');
-}
-
-    req.session.admin = true; // simple flag
-    res.redirect('/admin');
-
-}
-
-//Contact Save
 export const saveContact = async (req, res) => {
   try {
     const { name, email, number, subject, message } = req.body
@@ -61,15 +11,27 @@ export const saveContact = async (req, res) => {
       req.headers['x-forwarded-for'] ||
       req.socket.remoteAddress
 
-    // 1️⃣ DB save (ye already kaam kar raha hai)
-    await db.execute(
-      `INSERT INTO contact_msg 
-      (name, email, phone, subject, message, ip_address)
-      VALUES (?, ?, ?, ?, ?, ?)`,
-      [name, email, number || null, subject || null, message, ip_address]
-    )
+    // Insert into Supabase contact_messages table
+    const { data, error } = await supabase
+      .from('contact_messages')
+      .insert([
+        {
+          name,
+          email,
+          phone: number || null,
+          subject: subject || null,
+          message,
+          ip_address,
+          created_at: new Date().toISOString()
+        }
+      ])
 
-    // 2️⃣ EMAIL SEND
+    if (error) {
+      console.error('Database error:', error.message)
+      return res.status(500).send('Failed to save message')
+    }
+
+    // Send email notification (non-blocking)
     try {
       await transporter.sendMail({
         from: `"Website Contact" <${process.env.EMAIL_USER}>`,
@@ -85,13 +47,13 @@ export const saveContact = async (req, res) => {
           <p><b>IP:</b> ${ip_address || 'N/A'}</p>
         `
       })
-      console.log("Email sent successfully ✅")
+      console.log("✅ Email sent successfully")
     } catch (err) {
-      // 👇 YAHI WO CATCH HAI
-      console.error("Email error:", err.message)
+      // Log error but don't fail the request
+      console.error("⚠️ Email error:", err.message)
     }
 
-    // User ko success hi dikhao (email fail ho tab bhi)
+    // Return success to user even if email fails
     res.send("Message saved successfully ✅")
 
   } catch (err) {
@@ -100,73 +62,114 @@ export const saveContact = async (req, res) => {
   }
 }
 
-
-/* =====================================================
-   🔥 ADMIN API – GET CONTACTS (LATEST 10 + SEARCH)
-===================================================== */
+/**
+ * Get All Contacts (Admin Only)
+ * Retrieves contacts with optional search filtering
+ * Requires admin session
+ */
 export const getContacts = async (req, res) => {
-    if (!req.session.admin) {
-        return res.status(401).json({ error: "Unauthorized" })
-    }
+  // Check if user is authenticated as admin
+  if (!req.session.admin) {
+    return res.status(401).json({ error: "Unauthorized" })
+  }
 
-    try {
-        const search = req.query.search
+  try {
+    const search = req.query.search
 
-        let sql = `
-            SELECT 
-                id,
-                name,
-                phone,
-                email,
-                message AS msg,
-                ip_address AS ip,
-                DATE(created_at) AS date
-               
-            FROM contact_msg
-            ${search ? "WHERE name LIKE ? OR email LIKE ? OR phone LIKE ?" : ""}
-            LIMIT 10
-        `//ORDER BY id DESC
-
-        const values = search
-            ? [`%${search}%`, `%${search}%`, `%${search}%`]
-            : []
-
-        const [rows] = await db.execute(sql, values)
-        res.json(rows)
-
-    } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: "Failed to fetch contacts" })
-    }
-}
-
-/* =====================================================
-   🔥 ADMIN API – DELETE SELECTED CONTACTS
-===================================================== */
-export const deleteContacts = async (req, res) => {
-    try {
-        const { ids } = req.body
-
-        if (!ids || ids.length === 0) {
-            return res.status(400).json({ message: "No IDs provided" })
+    // Create a scoped client for the authenticated admin
+    const scopedSupabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
+      global: {
+        headers: {
+          Authorization: `Bearer ${req.session.admin.token}`
         }
+      }
+    })
 
-        const placeholders = ids.map(() => '?').join(',')
+    // Build query using correct PostgREST alias syntax: alias:column
+    let query = scopedSupabase
+      .from('contact_messages')
+      .select('id, name, phone, email, msg:message, ip:ip_address, created_at')
+      .order('created_at', { ascending: false })
+      .limit(50) // Get more results for pagination
 
-        await db.execute(
-            `DELETE FROM contact_msg WHERE id IN (${placeholders})`,
-            ids
-        )
-
-        res.json({ success: true })
-
-    } catch (err) {
-        console.error(err)
-        res.status(500).json({ error: "Delete failed" })
+    // Apply search filter if provided
+    if (search) {
+      query = query.or(
+        `name.ilike.%${search}%,email.ilike.%${search}%,phone.ilike.%${search}%`
+      )
     }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Query error:', error.message)
+      return res.status(500).json({ error: "Failed to fetch contacts" })
+    }
+
+    // Format dates for display
+    const formattedData = data.map(contact => ({
+      ...contact,
+      date: new Date(contact.created_at).toISOString().split('T')[0]
+    }))
+
+    res.json(formattedData)
+
+  } catch (err) {
+    console.error('Error fetching contacts:', err)
+    res.status(500).json({ error: "Failed to fetch contacts" })
+  }
 }
 
-// Health check endpoint
-export const healtz =  (req, res) => {
+/**
+ * Delete Selected Contacts (Admin Only)
+ * Deletes multiple contacts by ID
+ */
+export const deleteContacts = async (req, res) => {
+  try {
+    // Check authentication
+    if (!req.session.admin) {
+      return res.status(401).json({ error: "Unauthorized" })
+    }
+
+    const { ids } = req.body
+
+    if (!ids || ids.length === 0) {
+      return res.status(400).json({ message: "No IDs provided" })
+    }
+
+    // Create a scoped client for the authenticated admin
+    const scopedSupabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
+      global: {
+        headers: {
+          Authorization: `Bearer ${req.session.admin.token}`
+        }
+      }
+    })
+
+    // Delete from Supabase
+    const { error } = await scopedSupabase
+      .from('contact_messages')
+      .delete()
+      .in('id', ids)
+
+    if (error) {
+      console.error('Delete error:', error.message)
+      return res.status(500).json({ error: "Delete failed" })
+    }
+
+    console.log(`✅ Deleted ${ids.length} contacts`)
+    res.json({ success: true })
+
+  } catch (err) {
+    console.error('Delete error:', err)
+    res.status(500).json({ error: "Delete failed" })
+  }
+}
+
+/**
+ * Health Check Endpoint
+ * Used to verify server is running
+ */
+export const healtz = (req, res) => {
   res.status(200).send('OK');
 }
