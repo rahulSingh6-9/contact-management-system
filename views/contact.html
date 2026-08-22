@@ -659,9 +659,10 @@ button[type="submit"].success { background: linear-gradient(135deg, #10b981, #05
 ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; cursor: pointer; }
 ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-textarea::-webkit-scrollbar-track { background: transparent; border-radius: 14px; margin: 4px; }
-textarea::-webkit-scrollbar-thumb { background: #334155; border-radius: 14px; cursor: pointer; }
-textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
+textarea::-webkit-scrollbar { width: 5px; }
+textarea::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; margin: 5px; }
+textarea::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; cursor: pointer; }
+textarea::-webkit-scrollbar-thumb:hover { background: #a855f7; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
@@ -790,15 +791,69 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
     .rocket-illustration { width: 80px; bottom: 80px; left: 20px; }
 }
 
+/* ===== ENTRANCE ANIMATIONS ===== */
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInSubtle {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.animate-fade-up {
+    opacity: 0;
+    animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-fade-scale {
+    opacity: 0;
+    animation: fadeInScale 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-fade-in {
+    opacity: 0;
+    animation: fadeInSubtle 1s ease-out forwards;
+}
+
+/* Stagger Utilities */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+.delay-800 { animation-delay: 800ms; }
+.delay-900 { animation-delay: 900ms; }
+.delay-1000 { animation-delay: 1000ms; }
+.delay-1100 { animation-delay: 1100ms; }
+.delay-1200 { animation-delay: 1200ms; }
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-up, .animate-fade-scale, .animate-fade-in {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
 </style>
 </head>
 <body>
 
-<div class="page-layout">
+<div class="page-layout animate-fade-in">
 
     <!-- TECH STACK SIDEBAR -->
     <aside class="tech-stack">
-        <div class="tech-title">Tech Stack I Work With</div>
+        <div class="tech-title animate-fade-in delay-100">Tech Stack I Work With</div>
         
         <svg class="tech-svg-bg" viewBox="0 0 150 480">
             <!-- Curved Arrow -->
@@ -811,32 +866,33 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
         </svg>
         
         <!-- MongoDB -->
-        <div class="tech-icon mongo">
+        <div class="tech-icon mongo animate-fade-in delay-200">
             <img src="https://res.cloudinary.com/djgizjh2y/image/upload/v1787302096/mongodb_ree9rv.png"/>
         </div>
         <!-- Express -->
-        <div class="tech-icon express">
+        <div class="tech-icon express animate-fade-in delay-300">
             <img src="https://res.cloudinary.com/djgizjh2y/image/upload/v1787302097/expressssjs_gzzxwk.jpg" />
         </div>
         <!-- React -->
-        <div class="tech-icon react">
+        <div class="tech-icon react animate-fade-in delay-400">
             <img src="https://res.cloudinary.com/djgizjh2y/image/upload/v1787302096/reactjs_iudvfb.png" />
         </div>
         <!-- Node.js -->
-        <div class="tech-icon node">
+        <div class="tech-icon node animate-fade-in delay-500">
             <img src="https://res.cloudinary.com/djgizjh2y/image/upload/v1787302096/nodejs_nsw8lr.png" />
         </div>
         <!-- Tailwind CSS -->
-        <div class="tech-icon tailwind">
+        <div class="tech-icon tailwind animate-fade-in delay-600">
             <img src="https://res.cloudinary.com/djgizjh2y/image/upload/v1787302096/tailwind_onyl8o.png" />
         </div>
         <!-- GitHub -->
-        <div class="tech-icon github">
+        <div class="tech-icon github animate-fade-in delay-700">
             <img src="https://res.cloudinary.com/djgizjh2y/image/upload/v1787303510/github_f9dksz.jpg" />
         </div>
         <!-- VSCode -->
-        <div class="tech-icon vscode">
+        <div class="tech-icon vscode animate-fade-in delay-800">
             <img src="https://res.cloudinary.com/djgizjh2y/image/upload/v1787302096/VS-Code-Logo-Vector_tcwoau.jpg" />
+        </div>
     </aside>
 
     <main class="main-content">
@@ -846,11 +902,11 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
             <!-- LEFT FORM -->
             <div class="contact-form">
 
-                <h2>Contact Us</h2>
-                <p>Let's build something amazing together.</p>
+                <h2 class="animate-fade-up delay-100">Contact Us</h2>
+                <p class="animate-fade-up delay-200">Let's build something amazing together.</p>
 
                 <form id="Contact-form">
-                    <div class="form-group">
+                    <div class="form-group animate-fade-up delay-300">
                         <label for="name">Name</label>
                         <div class="input-wrapper">
                             <input type="text" id="name" name="name" placeholder="Enter your name" required>
@@ -859,7 +915,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group animate-fade-up delay-400">
                         <label for="email">Email</label>
                         <div class="input-wrapper">
                             <input type="email" id="email" name="email" placeholder="Enter your email" required>
@@ -868,7 +924,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group animate-fade-up delay-500">
                         <label for="number">Number</label>
                         <div class="input-wrapper">
                             <input type="number" id="number" name="number" placeholder="Enter your number" required>
@@ -877,7 +933,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group animate-fade-up delay-600">
                         <label for="msg">Message</label>
                         <div class="input-wrapper textarea-wrapper">
                             <textarea id="msg" name="message" maxlength="2000" placeholder="Type your message..." required></textarea>
@@ -886,7 +942,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                         </div>
                     </div>
 
-                    <button type="submit">
+                    <button type="submit" class="animate-fade-up delay-700">
                         Send Message
                         <!-- Send SVG -->
                         <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -904,11 +960,11 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
                         </div>
                         
-                        <div class="showcase-title">
+                        <div class="showcase-title animate-fade-up delay-200">
                             <h1><span class="mern">MERN Stack</span> <br> <span class="developer">Developer</span></h1>
                         </div>
 
-                        <div class="showcase-meta">
+                        <div class="showcase-meta animate-fade-up delay-300">
                             <div class="meta-block">
                                 <h4>&gt;_</h4>
                                 <p>Project</p>
@@ -920,7 +976,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                         </div>
                     </div>
                     
-                    <div class="showcase-right">
+                    <div class="showcase-right animate-fade-up delay-400">
                         <div class="brand-identity">
                             <p>Brand Identity</p>
                             <span>- Rahul Singh</span>
@@ -932,8 +988,9 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                 </div>
 
                 <!-- LAPTOP MOCKUP -->
-                <div class="laptop-container">
-                    <div class="laptop-screen-frame">
+                <div class="animate-fade-scale delay-500" style="display: flex; justify-content: center; width: 100%; position: relative; z-index: 5;">
+                    <div class="laptop-container">
+                        <div class="laptop-screen-frame">
                         <div class="portfolio-preview">
                             <div class="port-nav">
                                 <div class="port-logo"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Rahul Singh</div>
@@ -996,6 +1053,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                     <div class="laptop-hinge"></div>
                     <div class="laptop-base"></div>
                 </div>
+                </div> <!-- END LAPTOP WRAPPER -->
                 
             </div>
         </div>
@@ -1003,7 +1061,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
         <!-- FEATURE BAR -->
         <div class="feature-bar">
             <!-- Modern UI -->
-            <div class="feature-item">
+            <div class="feature-item animate-fade-up delay-600">
                 <div class="feature-icon">
                     <i class="fa-solid fa-laptop"></i>
                 </div>
@@ -1013,7 +1071,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                 </div>
             </div>
             <!-- Clean Code -->
-            <div class="feature-item">
+            <div class="feature-item animate-fade-up delay-700">
                 <div class="feature-icon">
                     <i class="fa-solid fa-code"></i>
                 </div>
@@ -1023,7 +1081,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                 </div>
             </div>
             <!-- Performance -->
-            <div class="feature-item">
+            <div class="feature-item animate-fade-up delay-800">
                 <div class="feature-icon">
                     <i class="fa-solid fa-bolt"></i>
                 </div>
@@ -1033,7 +1091,7 @@ textarea::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
                 </div>
             </div>
             <!-- Scalable -->
-            <div class="feature-item">
+            <div class="feature-item animate-fade-up delay-900">
                 <div class="feature-icon">
                     <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                 </div>
