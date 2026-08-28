@@ -4,219 +4,286 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Segoe UI",sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
 }
 
-body{
-    background:#f4f6fb;
-    min-height:100vh;
+body {
+    /* Using the exact same light gradient as contact page body, placing the dashboard in a dark wrapper, OR we can make the body dark. Let's make the body match the contact page's dark wrapper. */
+    background: #020617;
+    color: #cbd5e1;
+    min-height: 100vh;
 }
+
+/* ===== CUSTOM SCROLLBAR ===== */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a855f7; }
 
 /* ===== HEADER ===== */
-header{
-    background:linear-gradient(135deg,#2c5364,#203a43);
-    padding:15px 25px;
-    color:#fff;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
+header {
+    background: #111827;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 10;
 }
 
-.header-left{
-    display:flex;
-    align-items:center;
-    gap:15px;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.profile{
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    border:3px solid #fff;
-    object-fit:cover;
+.profile {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #a855f7;
+    object-fit: cover;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
 }
 
-.logout{
-    background:#ff4d4d;
-    color:#fff;
-    border:none;
-    padding:8px 16px;
-    border-radius:6px;
-    cursor:pointer;
-    transition:.3s;
+.header-left h2 {
+    color: #f8fafc;
+    font-size: 22px;
+    font-weight: 600;
 }
 
-.logout:hover{
-    background:#ff1f1f;
-    transform:scale(1.05);
+.logout-btn {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
-.logout-btn{
-    background:#ff4d4d;
-    color:#fff;
-    border:none;
-    padding:8px 16px;
-    border-radius:6px;
-    cursor:pointer;
-    transition:.3s;
-    text-decoration:none;
-    display:inline-block;
-}
-
-.logout-btn:hover{
-    background:#ff1f1f;
-    transform:scale(1.05);
+.logout-btn:hover {
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+    transform: translateY(-2px);
 }
 
 /* ===== DASHBOARD ===== */
-.dashboard{
-    padding:25px;
+.dashboard {
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 /* ===== INFO CARDS ===== */
-.cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:18px;
-    margin-bottom:20px;
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+    margin-bottom: 35px;
 }
 
-.card{
-    background:#fff;
-    padding:18px;
-    border-radius:14px;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    transition:.3s;
+.card {
+    background: #111827;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 15px 30px rgba(0,0,0,.15);
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #a855f7, #7c3aed);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.card h3{
-    font-size:14px;
-    color:#777;
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(168, 85, 247, 0.3);
 }
 
-.card p{
-    font-size:26px;
-    font-weight:bold;
-    margin-top:8px;
-    color:#203a43;
+.card:hover::before {
+    opacity: 1;
+}
+
+.card h3 {
+    font-size: 14px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.card p {
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 10px;
+    color: #f8fafc;
 }
 
 /* ===== ACTION BAR ===== */
-.action-bar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-bottom:12px;
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
-.search-box input{
-    padding:9px 14px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    outline:none;
-    width:260px;
+.search-box input {
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #f8fafc;
+    outline: none;
+    width: 300px;
+    font-size: 14px;
+    transition: all 0.3s ease;
 }
 
-.delete-all{
-    background:#ff4d4d;
-    color:#fff;
-    border:none;
-    padding:9px 16px;
-    border-radius:8px;
-    cursor:pointer;
-    transition:.3s;
+.search-box input::placeholder {
+    color: #64748b;
 }
 
-.delete-all:hover{
-    background:#ff1f1f;
-    transform:scale(1.05);
+.search-box input:focus {
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+}
+
+.delete-all {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.delete-all:hover {
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+    transform: translateY(-2px);
 }
 
 /* ===== TABLE ===== */
-.table-box{
-    background:#fff;
-    border-radius:14px;
-    overflow-x:auto;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
+.table-box {
+    background: #111827;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    overflow-x: auto;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:900px;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1000px;
 }
 
-thead{
-    background:#203a43;
-    color:#fff;
+thead {
+    background: #1e293b;
 }
 
-th,td{
-    padding:12px;
-    text-align:center;
+th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-tbody tr{
-    transition:.3s;
+td {
+    padding: 18px 20px;
+    font-size: 14px;
+    color: #cbd5e1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
 }
 
-tbody tr:hover{
-    background:#f0f4ff;
+tbody tr {
+    transition: all 0.2s ease;
 }
 
-.no-data{
-    text-align:center;
-    padding:15px;
-    color:#777;
-    display:none;
+tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
 }
 
-/* ===== MOBILE FIX ===== */
-@media(max-width:768px){
-    .profile{
-        width:50px;
-        height:50px;
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #a855f7;
+    cursor: pointer;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+    font-size: 15px;
+    display: none;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    header {
+        padding: 15px 20px;
     }
-
-    .cards{
-        grid-template-columns:repeat(2,1fr);
+    .profile {
+        width: 45px;
+        height: 45px;
     }
-
-    .card{
-        padding:14px;
+    .header-left h2 {
+        font-size: 18px;
     }
-
-    .card p{
-        font-size:20px;
+    .dashboard {
+        padding: 20px;
     }
-
-    .dashboard{
-        padding:15px;
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
     }
-
-    .search-box input{
-        width:100%;
+    .card p {
+        font-size: 24px;
     }
-
-    .action-bar{
-        flex-direction:column;
-        align-items:stretch;
+    .search-box input {
+        width: 100%;
+    }
+    .action-bar {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
+
 </style>
 </head>
 
@@ -224,7 +291,7 @@ tbody tr:hover{
 
 <header>
     <div class="header-left">
-        <img src="/image/rahul.jpeg" class="profile">
+        <img src="https://res.cloudinary.com/djgizjh2y/image/upload/v1787329287/rahul_Image3_uadylf.jpg" class="profile">
         <h2>Welcome, Rahul</h2>
     </div>
     <a href="/logout" class="logout-btn">Logout</a>
@@ -235,20 +302,48 @@ tbody tr:hover{
     <!-- INFO CARDS -->
     <div class="cards">
         <div class="card">
-            <h3>Total Contacts</h3>
-            <p id="totalCount">0</p>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h3>Total Contacts</h3>
+                    <p id="totalCount">0</p>
+                </div>
+                <div style="background: rgba(168, 85, 247, 0.1); padding: 12px; border-radius: 12px; color: #a855f7;">
+                    <i class="fa-solid fa-users fa-lg"></i>
+                </div>
+            </div>
         </div>
         <div class="card">
-            <h3>Unread Messages</h3>
-            <p id="unreadCount">0</p>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h3>Unread Messages</h3>
+                    <p id="unreadCount">0</p>
+                </div>
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 12px; border-radius: 12px; color: #3b82f6;">
+                    <i class="fa-solid fa-envelope fa-lg"></i>
+                </div>
+            </div>
         </div>
         <div class="card">
-            <h3>Today's Messages</h3>
-            <p id="todayCount">0</p>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h3>Today's Messages</h3>
+                    <p id="todayCount">0</p>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 12px; color: #10b981;">
+                    <i class="fa-solid fa-calendar-day fa-lg"></i>
+                </div>
+            </div>
         </div>
         <div class="card">
-            <h3>Server Status</h3>
-            <p>Online</p>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h3>Server Status</h3>
+                    <p style="color: #10b981;">Online</p>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 12px; color: #10b981;">
+                    <i class="fa-solid fa-server fa-lg"></i>
+                </div>
+            </div>
         </div>
     </div>
 
