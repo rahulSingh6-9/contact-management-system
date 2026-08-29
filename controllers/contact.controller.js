@@ -75,6 +75,7 @@ export const getContacts = async (req, res) => {
 
   try {
     const search = req.query.search
+    const date = req.query.date
 
     // Create a scoped client for the authenticated admin
     const scopedSupabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
@@ -97,6 +98,16 @@ export const getContacts = async (req, res) => {
       query = query.or(
         `name.ilike.%${search}%,email.ilike.%${search}%,phone.ilike.%${search}%`
       )
+    }
+    
+    // Apply date filter if provided
+    if (date) {
+      const startDate = new Date(date);
+      const endDate = new Date(date);
+      endDate.setDate(endDate.getDate() + 1);
+      
+      query = query.gte('created_at', startDate.toISOString())
+                   .lt('created_at', endDate.toISOString());
     }
 
     const { data, error } = await query

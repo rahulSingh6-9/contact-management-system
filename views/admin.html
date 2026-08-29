@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <style>
 * {
@@ -159,6 +162,7 @@ header {
     width: 300px;
     font-size: 14px;
     transition: all 0.3s ease;
+    color-scheme: dark;
 }
 
 .search-box input::placeholder {
@@ -330,7 +334,7 @@ input[type="checkbox"] {
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <h3>Today's Messages</h3>
+                    <h3 id="todayLabel">Today's Emails</h3>
                     <p id="todayCount">0</p>
                 </div>
                 <div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 12px; color: #10b981;">
@@ -353,8 +357,13 @@ input[type="checkbox"] {
 
     <!-- ACTION BAR -->
     <div class="action-bar">
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search by name...">
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name...">
+            </div>
+            <div class="search-box">
+                <input type="date" id="dateInput" placeholder="Filter by date..." title="Filter by date" style="width: auto; min-width: 150px;">
+            </div>
         </div>
         <button class="delete-all" onclick="deleteSelected()">Delete Selected</button>
     </div>
@@ -393,20 +402,26 @@ const todayCount = document.getElementById("todayCount");
 /* =========================
    RENDER TABLE
 ========================= */
-function renderTable(data) {
+function renderTable(data, forcedDate = null) {
   table.innerHTML = "";
 
   if (data.length === 0) {
     noData.style.display = "block";
     totalCount.textContent = 0;
-    unreadCount.textContent = 0;
-    todayCount.textContent = 0;
+    updateCounts(data, forcedDate);
     return;
   }
 
   noData.style.display = "none";
 
   data.forEach(c => {
+    let displayDate = c.date;
+    if (c.date && c.date.includes('-')) {
+        const [y, m, d] = c.date.split('-');
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        displayDate = `${d} ${monthNames[parseInt(m, 10) - 1]} ${y}`;
+    }
+
     table.innerHTML += `
       <tr>
         <td><input type="checkbox" class="selectBox" value="${c.id}"></td>
@@ -416,51 +431,93 @@ function renderTable(data) {
         <td>${c.email}</td>
         <td>${c.msg}</td>
         <td>${c.ip}</td>
-        <td>${c.date}</td>
+        <td>${displayDate}</td>
       </tr>
     `;
   });
 
   totalCount.textContent = data.length;
-  updateCounts(data);
+  updateCounts(data, forcedDate);
 }
 
 /* =========================
    UPDATE COUNTS
 ========================= */
-function updateCounts(data) {
-  const today = new Date().toISOString().slice(0, 10);
+function updateCounts(data, forcedDate = null) {
+  const dateInput = typeof forcedDate === 'string' ? forcedDate : document.getElementById("dateInput").value;
+  
+  // Get local date string for today (YYYY-MM-DD)
+  const todayObj = new Date();
+  const tYear = todayObj.getFullYear();
+  const tMonth = String(todayObj.getMonth() + 1).padStart(2, '0');
+  const tDay = String(todayObj.getDate()).padStart(2, '0');
+  const today = `${tYear}-${tMonth}-${tDay}`;
+  
+  // Get local date string for yesterday (YYYY-MM-DD)
+  const yesterdayObj = new Date();
+  yesterdayObj.setDate(yesterdayObj.getDate() - 1);
+  const yYear = yesterdayObj.getFullYear();
+  const yMonth = String(yesterdayObj.getMonth() + 1).padStart(2, '0');
+  const yDay = String(yesterdayObj.getDate()).padStart(2, '0');
+  const yesterday = `${yYear}-${yMonth}-${yDay}`;
+  
+  const targetDate = dateInput || today;
 
   unreadCount.textContent = 0; // temporarily disabled
-  todayCount.textContent = data.filter(c => c.date === today).length;
+  
+  // Update count
+  todayCount.textContent = data.filter(c => c.date === targetDate).length;
+  
+  // Update label
+  const todayLabel = document.getElementById("todayLabel");
+  if (todayLabel) {
+    if (targetDate === today) {
+      todayLabel.textContent = "Today's Emails";
+    } else if (targetDate === yesterday) {
+      todayLabel.textContent = "Yesterday's Emails";
+    } else {
+      const [y, m, d] = targetDate.split('-');
+      const formattedDate = new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      todayLabel.textContent = formattedDate + " Emails";
+    }
+  }
 }
 
 /* =========================
    LOAD CONTACTS
 ========================= */
 async function loadContacts() {
-  try {
-    const res = await fetch("/api/contacts");
-    contacts = await res.json();
-    renderTable(contacts);
-  } catch (err) {
-    console.error("Error loading contacts", err);
-  }
+  await fetchFilteredContacts();
 }
 
 /* =========================
-   SEARCH (BACKEND)
+   SEARCH & FILTER (BACKEND)
 ========================= */
-document.getElementById("searchInput").addEventListener("input", async e => {
-  const value = e.target.value.trim();
+async function fetchFilteredContacts(forceDate = null) {
+  const search = document.getElementById("searchInput").value.trim();
+  const date = typeof forceDate === 'string' ? forceDate : document.getElementById("dateInput").value;
+
+  let url = '/api/contacts?';
+  const params = new URLSearchParams();
+  if (search) params.append('search', search);
+  if (date) params.append('date', date);
 
   try {
-    const res = await fetch(`/api/contacts?search=${value}`);
+    const res = await fetch(url + params.toString());
     const data = await res.json();
-    renderTable(data);
+    renderTable(data, date);
   } catch (err) {
-    console.error("Search error", err);
+    console.error("Filter error", err);
   }
+}
+
+document.getElementById("searchInput").addEventListener("input", () => fetchFilteredContacts());
+flatpickr("#dateInput", {
+    dateFormat: "Y-m-d",
+    onChange: function(selectedDates, dateStr, instance) {
+        document.getElementById("dateInput").value = dateStr;
+        fetchFilteredContacts(dateStr);
+    }
 });
 
 /* =========================
